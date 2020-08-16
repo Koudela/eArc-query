@@ -1,0 +1,29 @@
+{
+    "name": "earc/query-language",
+    "description": "eArc - the explicit architecture framework - query language component",
+    "type": "library",
+    "license": "MIT",
+    "version": "0.0-ALPHA",
+    "authors": [
+        {
+            "name": "Thomas Koudela",
+            "email": "thomas@koudela.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable" : true,
+    "require": {
+        "php": "^7.2",
+        "ext-json": "*",
+        "earc/di": "^2.4"
+    },
+    "autoload": {
+        "psr-4" : {
+            "eArc\\QueryLanguage\\" : "src/",
+            "eArc\\QueryLanguageTest\\" : "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    }
+}
