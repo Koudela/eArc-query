@@ -15,25 +15,25 @@ use eArc\QueryLanguage\Exception\Interfaces\QueryExceptionInterface;
 class QueryPropertyRelation extends Collector
 {
     /**
-     * @param array $value
+     * @param iterable $value
      *
      * @return QueryConjunctionExtended
      *
      * @throws QueryExceptionInterface
      */
-    public function in(array $value): QueryConjunctionExtended
+    public function in(iterable $value): QueryConjunctionExtended
     {
         return new QueryConjunctionExtended($this, 'IN', $value);
     }
 
     /**
-     * @param array $value
+     * @param iterable $value
      *
      * @return QueryConjunctionExtended
      *
      * @throws QueryExceptionInterface
      */
-    public function notIn(array $value): QueryConjunctionExtended
+    public function notIn(iterable $value): QueryConjunctionExtended
     {
         return new QueryConjunctionExtended($this, 'NOT IN', $value);
     }

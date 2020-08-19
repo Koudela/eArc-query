@@ -11,19 +11,19 @@
 namespace eArc\QueryLanguage;
 
 use eArc\QueryLanguage\Collector\QueryInitializer;
-use eArc\QueryLanguage\Interfaces\QueryIndexServiceInterface;
-use eArc\QueryLanguage\Interfaces\QueryServiceInterface;
+use eArc\QueryLanguage\Interfaces\ResolverInterface;
+use eArc\QueryLanguage\Interfaces\QueryInterface;
 
-abstract class AbstractQueryService implements QueryServiceInterface
+abstract class AbstractQueryFactory implements QueryInterface
 {
-    public function find(?array $allowedDataIdentifiers = null): QueryInitializer
+    public function find(?iterable $allowedDataIdentifiers = null): QueryInitializer
     {
-        return new QueryInitializer($this->getQueryIndexService(), 'allowedDataIdentifiers', $allowedDataIdentifiers);
+        return new QueryInitializer($this->getQueryResolver(), 'allowedDataIdentifiers', $allowedDataIdentifiers);
     }
 
-    public function findBy(string $dataCategory, array $keyValuePairs, ?array $allowedDataIdentifiers = null): iterable
+    public function findBy(string $dataCategory, array $keyValuePairs, ?iterable $allowedDataIdentifiers = null): iterable
     {
-        $conjunction = (new QueryInitializer($this->getQueryIndexService(), 'allowedDataIdentifiers', $allowedDataIdentifiers));
+        $conjunction = (new QueryInitializer($this->getQueryResolver(), 'allowedDataIdentifiers', $allowedDataIdentifiers));
 
         foreach ($keyValuePairs as $dataPropertyName => $value) {
             if ($conjunction instanceof QueryInitializer) {
@@ -37,5 +37,5 @@ abstract class AbstractQueryService implements QueryServiceInterface
         return $conjunction->eval();
     }
 
-    abstract protected function getQueryIndexService(): QueryIndexServiceInterface;
+    abstract protected function getQueryResolver(): ResolverInterface;
 }

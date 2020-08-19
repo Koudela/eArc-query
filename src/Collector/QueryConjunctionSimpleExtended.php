@@ -25,4 +25,16 @@ class QueryConjunctionSimpleExtended extends QueryConjunction
     {
         return new QueryPropertyRelation($this, 'where', $dataProperty);
     }
+
+    /**
+     * @param QueryConjunctionExtended $query
+     *
+     * @return QueryConjunctionExtended
+     *
+     * @throws QueryExceptionInterface
+     */
+    public function BRACKETS(QueryConjunctionExtended $query): QueryConjunctionExtended
+    {
+        return new QueryConjunctionExtended($this, 'BRACKETS', $query);
+    }
 }

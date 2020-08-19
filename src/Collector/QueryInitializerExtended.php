@@ -24,6 +24,6 @@ class QueryInitializerExtended extends QueryInitializerSortable
      */
     public function limit(int $limit, int $offset = 0): QueryInitializerSortable
     {
-        return new QueryInitializerSortable($this, 'from', $limit, $offset);
+        return new QueryInitializerSortable($this, 'limit', $limit, $offset);
     }
 }

@@ -42,19 +42,14 @@ class QueryConjunctionExtended extends QueryConjunction {}
 
 /**
  * @method QueryPropertyRelation where(string $dataProperty)
+ * @method QueryConjunctionExtended BRACKETS(QueryConjunctionExtended $query)
  */
 class QueryConjunctionSimpleExtended extends QueryConjunction {}
 
 /**
- * @method QueryJoin JOIN(string $dataCategory, string $dataProperty)
  * @method QueryResult eval()
  */
 class QueryConjunction {}
-
-/**
- * @method QueryPropertyRelation where(string $dataProperty)
- */
-class QueryConjunctionSimple {}
 
 /**
  * @method QueryConjunctionExtended in(array $value)
@@ -68,13 +63,10 @@ class QueryConjunctionSimple {}
  */
 class QueryPropertyRelation {}
 
-
 /**
- * @method QueryConjunctionSimple ON(string $dataCategory, string $dataProperty)
+ * @method QueryPropertyRelation where(string $dataProperty)
  */
-class QueryJoin {}
-
-class QueryPart extends QueryConjunctionSimple {}
+class QueryPart {}
 
 class QueryResult implements \IteratorAggregate {}
 
@@ -84,5 +76,4 @@ class QueryResult implements \IteratorAggregate {}
     ->where('')
     ->notEqual('')
     ->AND((new QueryPart())->where('')->equals(''))
-    ->JOIN('','')->ON('','')
-    ->where('')->equals('')->eval();
+    ->andWhere('')->equals('')->eval();

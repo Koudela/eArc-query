@@ -13,9 +13,7 @@
     "minimum-stability": "dev",
     "prefer-stable" : true,
     "require": {
-        "php": "^7.2",
-        "ext-json": "*",
-        "earc/di": "^2.4"
+        "php": "^7.2"
     },
     "autoload": {
         "psr-4" : {

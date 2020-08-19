@@ -10,13 +10,13 @@
 
 namespace eArc\QueryLanguage\Result;
 
-use eArc\QueryLanguage\Interfaces\QueryIndexServiceInterface;
+use eArc\QueryLanguage\Interfaces\ResolverInterface;
 use IteratorAggregate;
 
 class QueryResult implements IteratorAggregate
 {
-    /** @var QueryIndexServiceInterface */
-    protected $queryIndexService;
+    /** @var ResolverInterface */
+    protected $resolver;
     /** @var string[] */
     protected $allowedDataIdentifiers;
     /** @var string */
@@ -29,20 +29,27 @@ class QueryResult implements IteratorAggregate
     protected $offset;
 
     public function __construct(
-        QueryIndexServiceInterface $queryIndexService,
-        ?array $allowedDataIdentifiers,
+        ResolverInterface $resolver,
         string $dataCategory,
-        iterable $items,
+        ?iterable $items,
+        ?array $allowedDataIdentifiers,
         int $limit = 0,
-        int $offset = 0
+        int $offset = 0,
+        ?string $sort = null,
+        ?array $sortBy = null
     )
     {
-        $this->queryIndexService = $queryIndexService;
+        $this->resolver = $resolver;
         $this->allowedDataIdentifiers = $allowedDataIdentifiers;
         $this->dataCategory = $dataCategory;
-        $this->items = $items;
-        $this->limit = $limit;
-        $this->offset = $offset;
+        if (is_null($sort)) {
+            $this->limit = $limit;
+            $this->offset = $offset;
+            $this->items = $items ?? $resolver->findAll($dataCategory);
+        } else {
+            $this->items = $this->resolver
+                ->sort($dataCategory, $sort, $sortBy, $allowedDataIdentifiers, $items, $limit, $offset);
+        }
     }
 
     public function getIterator()

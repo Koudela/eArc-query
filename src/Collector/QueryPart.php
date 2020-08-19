@@ -10,15 +10,24 @@
 
 namespace eArc\QueryLanguage\Collector;
 
-class QueryPart extends QueryConjunctionSimple
+use eArc\QueryLanguage\Exception\Interfaces\QueryExceptionInterface;
+
+class QueryPart extends Collector
 {
     public function __construct()
     {
         parent::__construct(null);
     }
 
-    public static function build()
+    /**
+     * @param string $dataProperty
+     *
+     * @return QueryPropertyRelation
+     *
+     * @throws QueryExceptionInterface
+     */
+    public function where(string $dataProperty): QueryPropertyRelation
     {
-        return new QueryPart();
+        return new QueryPropertyRelation($this, 'where', $dataProperty);
     }
 }

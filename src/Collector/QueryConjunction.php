@@ -15,25 +15,12 @@ use eArc\QueryLanguage\Exception\Interfaces\QueryExceptionInterface;
 class QueryConjunction extends Collector
 {
     /**
-     * @param string $dataCategory
-     * @param string $dataProperty
-     *
-     * @return QueryJoin
-     *
-     * @throws QueryExceptionInterface
-     */
-    public function JOIN(string $dataCategory, string $dataProperty): QueryJoin
-    {
-        return new QueryJoin($this, 'JOIN', $dataCategory, $dataProperty);
-    }
-
-    /**
      * @return mixed
      *
      * @throws QueryExceptionInterface
      */
     public function eval()
     {
-        return $this->queryIndexService->getQueryResolver()->eval($this->queryIndexService, $this);
+        return $this->resolver->eval($this);
     }
 }
