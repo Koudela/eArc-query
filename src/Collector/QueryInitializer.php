@@ -10,6 +10,7 @@
 
 namespace eArc\QueryLanguage\Collector;
 
+use eArc\QueryLanguage\Exception\Interfaces\QueryExceptionInterface;
 use eArc\QueryLanguage\Exception\QueryException;
 use eArc\QueryLanguage\Interfaces\ResolverInterface;
 
@@ -25,7 +26,7 @@ class QueryInitializer extends Collector
      *
      * @return QueryInitializerExtended
      *
-     * @throws QueryException
+     * @throws QueryExceptionInterface
      */
     public function from(string $dataCategory): QueryInitializerExtended
     {

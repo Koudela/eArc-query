@@ -1,5 +1,6 @@
 /vendor/
 composer.phar
 composer.lock
+.phpunit.result.cache
 [tT][oO][dD][oO]*
 [lL][oO][cC][aA][lL]*

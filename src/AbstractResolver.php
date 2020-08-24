@@ -32,8 +32,13 @@ abstract class AbstractResolver implements ResolverInterface
     {
         /** @var string[]|null $allowedDataIdentifiers */
         $allowedDataIdentifiers = null;
+        /** @var string[]|null $orConj */
+        $lastOrConjValue2 = null;
 
         foreach ($queryConjunction as $args) {
+            if (!isset($args[1])) {
+                continue;
+            }
             switch ($args[1])  {
                 case 'allowedDataIdentifiers':
                     $allowedDataIdentifiers = $args[2];
@@ -44,7 +49,7 @@ abstract class AbstractResolver implements ResolverInterface
                     break;
                 case 'sortAsc':
                 case 'sortDesc':
-                    $sort = $args[1] === 'sortAsc' ? 'asc' : 'desc';
+                    $sort = $args[1] === 'sortAsc' ? ResolverInterface::SORT_ASC : ResolverInterface::SORT_DESC;
                     $sortBy = $args[2];
                     break;
                 case 'from':
@@ -79,11 +84,20 @@ abstract class AbstractResolver implements ResolverInterface
                             QueryConjunctionExtended::class
                         ));
                     }
-                    $conjValue1 = $this->evalConjunction(
-                        $args[1],
-                        $conjValue1,
-                        $this->eval($args[2], $dataCategory)
-                    );
+                    $conjValue2 = $conjValue1;
+                    $conjValue1 = $this->eval($args[2], $dataCategory);
+                    if ($args[1] === 'AND') {
+                        $conjValue1 = $this->evalConjunction(
+                            $args[1],
+                            $conjValue1,
+                            $conjValue2
+                        );
+                        unset($conjValue2);
+
+                        break;
+                    }
+                    $lastOrConjValue2 = $conjValue2;
+                    unset($conjValue2);
                     break;
                 case 'IN':
                 case 'NOT IN':
@@ -103,13 +117,28 @@ abstract class AbstractResolver implements ResolverInterface
                         if (!isset($conjValue2)) {
                             throw new QueryException('This is not allowed to happen. Most probably there is a flaw in the query language logic.');
                         }
-                        $conjValue1 = $this->evalConjunction($conj, $conjValue1, $conjValue2);
+                        if ($conj === 'AND') {
+                            $conjValue1 = $this->evalConjunction($conj, $conjValue1, $conjValue2);
+                            unset($conj);
+                            unset($conjValue2);
 
-                        unset($conj);
+                            break;
+                        }
+                        if ($lastOrConjValue2 !== null) {
+                            $conjValue2 = $this->evalConjunction('OR', $conjValue2, $lastOrConjValue2);
+                        }
+                        $lastOrConjValue2 = $conjValue2;
                         unset($conjValue2);
                     }
                     break;
             }
+        }
+
+        if ($lastOrConjValue2 !== null) {
+            if (!isset($conjValue1)) {
+                throw new QueryException('This is not allowed to happen. Most probably there is a flaw in the query language logic.');
+            }
+            $conjValue1 = $this->evalConjunction('OR', $conjValue1, $lastOrConjValue2);
         }
 
         if (is_null($dataCategory)) {
@@ -137,7 +166,7 @@ abstract class AbstractResolver implements ResolverInterface
      *
      * @throws QueryExceptionInterface
      */
-    protected function evalConjunction(string $type, iterable $val1, iterable $val2): array
+    protected function evalConjunction(string $type, iterable $val1, iterable $val2): iterable
     {
         if ($val1 instanceof Traversable) {
             $val1 = iterator_to_array($val1);
@@ -148,11 +177,12 @@ abstract class AbstractResolver implements ResolverInterface
         }
 
         if ($type === 'AND') {
-            return array_intersect_key(array_merge_recursive($val1, $val2), $val2);
+            return array_intersect_key($val1, $val2);
         }
 
+
         if ($type === 'OR') {
-            return array_merge_recursive($val1, $val2);
+            return array_merge($val1, $val2);
         }
 
         throw new QueryException('unknown conjunction type');

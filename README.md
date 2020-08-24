@@ -1,7 +1,7 @@
 # eArc-query-language
 
-This is the lightweight standalone (zero dependencies) query language component 
-of the eArc framework.
+This is the lightweight standalone (zero dependencies) find/select query language 
+component of the eArc framework.
 
 Its full type hint support and its sql-like syntax make it easy to learn and 
 easy to use. 
@@ -56,8 +56,11 @@ class MyResolver extends AbstractResolver
 }
 ```
 
-The returned iterable has to use for the keys unique data identifiers and as
-values the data items.
+The returned iterable has to use for the keys unique data identifier strings and 
+as values the data items.
+
+HINT: The unique data identifiers have to contain one non integer character, 
+otherwise PHP would transform the string key to an integer. 
 
 You may use several distinct bindings in your project. That is why the resolver
 has to be bound to your query factory. Just extend the `AbstractQueryFactory`
@@ -220,35 +223,3 @@ pointed at by the allowed data identifiers.
 
 ### release 0.0
 - the first official release
-
-
-```php
-use eArc\QueryLanguage\Collector\QueryInitializer;
-use eArc\QueryLanguage\Collector\QueryPart;
-(new QueryInitializer())->from('')
-->limit(0,0)
-->sortAsc('')
-->where('')
-->notEqual('')
-->andWhere('')
-->geq('')
-->orWhere('')
-->gt('')
-->AND((new QueryPart())->where('')->gt(''))
-->OR((new QueryPart())->where('')->lt(''))
-->eval();
-```
-
-You can simulate a join by:
-
-```php
-use eArc\QueryLanguage\Collector\QueryInitializer;
-$pks = (new QueryInitializer())->from('')
-->where('')
-->gt('')
-->eval();
-
-(new QueryInitializer())->from('')
-->where('joinKey')
-->in($pks);
-```

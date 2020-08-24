@@ -11,12 +11,13 @@
 namespace eArc\QueryLanguage;
 
 use eArc\QueryLanguage\Collector\QueryInitializer;
+use eArc\QueryLanguage\Collector\QueryInitializerExtended as QueryInitializerExtendedAlias;
 use eArc\QueryLanguage\Interfaces\ResolverInterface;
 use eArc\QueryLanguage\Interfaces\QueryInterface;
 
 abstract class AbstractQueryFactory implements QueryInterface
 {
-    public function find(?iterable $allowedDataIdentifiers = null): QueryInitializer
+    public function select(?iterable $allowedDataIdentifiers = null): QueryInitializer
     {
         return new QueryInitializer($this->getQueryResolver(), 'allowedDataIdentifiers', $allowedDataIdentifiers);
     }
@@ -24,10 +25,11 @@ abstract class AbstractQueryFactory implements QueryInterface
     public function findBy(string $dataCategory, array $keyValuePairs, ?iterable $allowedDataIdentifiers = null): iterable
     {
         $conjunction = (new QueryInitializer($this->getQueryResolver(), 'allowedDataIdentifiers', $allowedDataIdentifiers));
+        $conjunction = $conjunction->from($dataCategory);
 
         foreach ($keyValuePairs as $dataPropertyName => $value) {
-            if ($conjunction instanceof QueryInitializer) {
-                $conjunction = $conjunction->from($dataCategory)->where($dataPropertyName)->equals($value);
+            if ($conjunction instanceof QueryInitializerExtendedAlias) {
+                $conjunction = $conjunction->where($dataPropertyName)->equals($value);
 
                 continue;
             }

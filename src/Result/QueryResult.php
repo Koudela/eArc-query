@@ -32,7 +32,7 @@ class QueryResult implements IteratorAggregate
         ResolverInterface $resolver,
         string $dataCategory,
         ?iterable $items,
-        ?array $allowedDataIdentifiers,
+        ?iterable $allowedDataIdentifiers,
         int $limit = 0,
         int $offset = 0,
         ?string $sort = null,
@@ -43,33 +43,33 @@ class QueryResult implements IteratorAggregate
         $this->allowedDataIdentifiers = $allowedDataIdentifiers;
         $this->dataCategory = $dataCategory;
         if (is_null($sort)) {
-            $this->limit = $limit;
-            $this->offset = $offset;
             $this->items = $items ?? $resolver->findAll($dataCategory);
         } else {
             $this->items = $this->resolver
-                ->sort($dataCategory, $sort, $sortBy, $allowedDataIdentifiers, $items, $limit, $offset);
+                ->sort($dataCategory, $sort, $sortBy, $items, $allowedDataIdentifiers, $limit, $offset);
         }
+        $this->limit = $limit;
+        $this->offset = $offset;
     }
 
     public function getIterator()
     {
         $allowedDataIdentifiers = is_array($this->allowedDataIdentifiers) ? array_flip($this->allowedDataIdentifiers) : null;
 
-        $cnt = 0;
+        $cnt = -1;
         foreach ($this->items as $dataIdentifier => $item) {
             if (!is_null($allowedDataIdentifiers) && !array_key_exists($dataIdentifier, $allowedDataIdentifiers)) {
                 continue;
             }
-            if ($cnt < $this->offset) {
+            $cnt++;
+            if ($this->offset !== 0 && $cnt < $this->offset) {
                 continue;
             }
-            if (0 !== $this->limit && $cnt > $this->offset + $this->limit) {
+            if ($this->limit !== 0 && $cnt >= $this->offset + $this->limit) {
                 break;
             }
-            $cnt++;
 
-            yield $dataIdentifier => $this->dataCategory;
+            yield $dataIdentifier => $item;
         }
     }
 }

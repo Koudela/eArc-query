@@ -25,7 +25,7 @@ interface QueryInterface
      *
      * @throws QueryExceptionInterface
      */
-    public function find(?iterable $allowedDataIdentifiers = null): QueryInitializer;
+    public function select(?iterable $allowedDataIdentifiers = null): QueryInitializer;
 
     /**
      * Get the data for the key value pairs based on the data category. The keys

@@ -15,6 +15,9 @@ use eArc\QueryLanguage\Exception\Interfaces\QueryExceptionInterface;
 
 interface ResolverInterface
 {
+    const SORT_ASC = 'asc';
+    const SORT_DESC = 'desc';
+
     /**
      * @param string $dataCategory
      *
@@ -37,12 +40,12 @@ interface ResolverInterface
      * @param string $dataCategory
      * @param string $sort
      * @param iterable $dataPropertyNames
-     * @param iterable|null $dataIdentifiers
+     * @param iterable|null $dataItems
      * @param iterable|null $allowedDataIdentifiers [!]you may ignore this information or use it to speed up your sorting
      * @param int $limit [!]you may ignore this information or use it to speed up your sorting
      * @param int $offset [!]you may ignore this information or use it to speed up your sorting
      *
      * @return iterable
      */
-    public function sort(string $dataCategory, string $sort, iterable $dataPropertyNames, ?iterable $dataIdentifiers, ?iterable $allowedDataIdentifiers = null, int $limit = 0, int $offset = 0): iterable;
+    public function sort(string $dataCategory, string $sort, iterable $dataPropertyNames, ?iterable $dataItems, ?iterable $allowedDataIdentifiers = null, int $limit = 0, int $offset = 0): iterable;
 }
