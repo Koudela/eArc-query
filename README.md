@@ -221,5 +221,9 @@ pointed at by the allowed data identifiers.
 
 ## releases
 
+### release 0.1
+- support php ^8.0 || ^7.2
+
 ### release 0.0
+- support php ^7.2
 - the first official release
